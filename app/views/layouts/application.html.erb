@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pipedrive_RD</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+<% if current_user %>
+	<li><a>Logged as <%= current_user.name %> </a></li>
+	<li><a><%= link_to "New Lead", new_lead_path %></a></li>
+	<li><a><%= link_to "Log Out", logout_path, method: :delete, data: { confirm: 'Are you sure?' } %></a></li>
+<% else %>
+	<li><a><%= link_to "Sign Up", new_user_path %></a></li>
+	<li><a><%= link_to "Log In", login_path %></a></li>
+<% end %>
+
+<p id="notice"><%= notice %></p>
+<%= yield %>
+
+</body>
+</html>
