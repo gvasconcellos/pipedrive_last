@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150329222741) do
+ActiveRecord::Schema.define(version: 20150401044727) do
 
   create_table "leads", force: :cascade do |t|
     t.string   "name"
@@ -34,6 +34,8 @@ ActiveRecord::Schema.define(version: 20150329222741) do
     t.string   "encrypted_password"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.string   "app_key"
+    t.string   "password_digest"
   end
 
 end

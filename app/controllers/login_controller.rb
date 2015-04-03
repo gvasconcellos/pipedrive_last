@@ -7,10 +7,11 @@ class LoginController < ApplicationController
 
 		if user && user.valid_password?(params[:user][:password])
 			session[:user_id] = user.id
-			redirect_to leads_path
+			redirect_to leads_path, notice: "Logged in"
 		else
 			flash.now[:alert] = "Invalid info"
-			render "new"
+			redirect_to root_path, notice: "Invalid info"
+			#render "new"
 		end
 	end
 

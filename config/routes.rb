@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   get 'login' => "login#new"
   post 'login' => "login#create"
   delete "logout" => "login#destroy"
-  resources :users, only: [:new, :create]
+  resources :users, only: [:new, :create, :edit, :update]
 
   resources :leads
   # The priority is based upon order of creation: first created -> highest priority.

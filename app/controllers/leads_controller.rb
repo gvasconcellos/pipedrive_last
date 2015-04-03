@@ -13,7 +13,7 @@ class LeadsController < ApplicationController
   # GET /leads/1
   # GET /leads/1.json
   def show
-    @lead = current_user.leads.find(params[:id])
+    #@lead = current_user.leads.find(params[:id])
   end
 
   # GET /leads/new
@@ -23,7 +23,7 @@ class LeadsController < ApplicationController
 
   # GET /leads/1/edit
   def edit
-    @lead = current_user.leads.find(params[:id])
+    #@lead = current_user.leads.find(params[:id])
   end
 
   # POST /leads
@@ -45,7 +45,7 @@ class LeadsController < ApplicationController
   # PATCH/PUT /leads/1
   # PATCH/PUT /leads/1.json
   def update
-    @lead = current_user.leads.find(params[:id])
+    #@lead = current_user.leads.find(params[:id])
 
     respond_to do |format|
       if @lead.update(lead_params)
@@ -61,7 +61,7 @@ class LeadsController < ApplicationController
   # DELETE /leads/1
   # DELETE /leads/1.json
   def destroy
-    @lead = current_user.leads.find(params[:id])
+    #@lead = current_user.leads.find(params[:id])
 
     @lead.destroy
     respond_to do |format|
