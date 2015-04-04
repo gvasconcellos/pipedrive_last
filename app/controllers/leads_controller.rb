@@ -35,6 +35,7 @@ class LeadsController < ApplicationController
       
       if @lead.save
         org_app_id = User.get_or_create_company(current_user, @lead.company)
+        custom_fields = User.get_or_create_custom_fields()
 
         lead_to_person = { 
           org_id: org_app_id,

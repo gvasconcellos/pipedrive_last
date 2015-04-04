@@ -28,12 +28,11 @@ class UsersController < ApplicationController
 	def update
 		@user = User.find(params[:id])
     	respond_to do |format|
-      		if @user.update(user_params)
-      			User.assert_or_integrate(@user)
+      		if @user.update(user_params) && User.assert_or_integrate(@user)
       			format.html { redirect_to leads_path, notice: 'App Key was successfully updated.' }
 	        	format.json { render :show, status: :ok, location: leads_path }
       		else
-	        	format.html { render :edit }
+	        	format.html { redirect_to edit_user_path(@user), notice: "Invalid Pipedrive App Key" }
         		format.json { render json: @user.errors, status: :unprocessable_entity }
       		end
     	end

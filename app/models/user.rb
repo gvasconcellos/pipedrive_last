@@ -27,7 +27,6 @@ class User < ActiveRecord::Base
 
 	## searches for "Job Title" and "Website" on the user's pipedrive acc
 	## if any is missing, create it
-	## then flip the integrated flag to quicken future queries
 	def self.assert_or_integrate(user)
 
 		assert_job = false
@@ -35,6 +34,8 @@ class User < ActiveRecord::Base
 
 		query = 'https://api.pipedrive.com/v1/personFields?api_token=' + user.app_key
       	response = HTTParty.get(query)
+
+      	puts "response", response
       			
       	#only 1 outside query saves time.
       	if response["success"]
@@ -52,8 +53,14 @@ class User < ActiveRecord::Base
       		unless assert_website
 	      		add_field_to_user(user, "Website")
       		end
+      		#successfully integrated
+      		return true
       	else
-      		#proc creation error
+      		if response["error"] == "You need to be authorized to make this request."
+      			user.app_key = ""
+      			#invalid key
+      			return false
+      		end
       	end
 
       	#todo set integrated to 1		
@@ -61,6 +68,7 @@ class User < ActiveRecord::Base
 
 	## effectively add the fields
 	def self.add_field_to_user(user, field_name)
+		field_api_key = false
 		custom_field = Pipedrive::PersonField.new(user.app_key)
 
   		response = custom_field.create({ name: field_name, field_type: "varchar" })
@@ -71,6 +79,8 @@ class User < ActiveRecord::Base
   		else
   			#proc creation error
   		end
+
+  		field_api_key
 
 	end
 
