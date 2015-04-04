@@ -7,13 +7,11 @@ class UsersController < ApplicationController
 		@user = User.new(user_params)
 
 		if @user.save
-			if !@user.app_key.empty?
-
-				User.assert_or_integrate(@user)
-
-				redirect_to root_path, notice: "User successfully created and Integrated"
+			if @user.app_key.empty? || !User.assert_or_integrate(@user)
+				redirect_to root_path, notice: "User successfully created. \
+										App Key is either empty or invalid. "
 			else
-				redirect_to root_path, notice: "User successfully created without Pipedrive Integration"
+				redirect_to root_path, notice: "User successfully created and Integrated"
 			end
 		else
 			render action: "new"

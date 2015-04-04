@@ -35,6 +35,7 @@ class User < ActiveRecord::Base
 		assert_website = false
 
 		query = 'https://api.pipedrive.com/v1/personFields?api_token=' + user.app_key
+		puts "query",query
       	response = HTTParty.get(query)
     			
       	if response["success"]
@@ -57,6 +58,7 @@ class User < ActiveRecord::Base
       	else
       		if response["error"] == "You need to be authorized to make this request."
       			user.app_key = ""
+      			user.save
       			#invalid key
       			return false
       		end
