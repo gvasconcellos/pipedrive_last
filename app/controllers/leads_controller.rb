@@ -35,7 +35,6 @@ class LeadsController < ApplicationController
       
       if @lead.save
         org_app_id = User.get_or_create_company(current_user, @lead.company)
-        custom_fields = User.get_or_create_custom_fields()
 
         lead_to_person = { 
           org_id: org_app_id,
@@ -43,6 +42,8 @@ class LeadsController < ApplicationController
           name: @lead.name + " " + @lead.last_name,
           email: @lead.email,
           phone: @lead.phone,
+          current_user.field_key["Job Title"] => @lead.job_title,
+          current_user.field_key["Website"] => @lead.website
           #{}"Job Title" => lead.job_title,
           #bla => @lead.website
         } 

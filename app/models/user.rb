@@ -2,6 +2,7 @@ require "bcrypt"
 
 class User < ActiveRecord::Base
 	has_many :leads
+	serialize :field_key, Hash
 
 
 ## Local Authorization
@@ -27,6 +28,7 @@ class User < ActiveRecord::Base
 
 	## searches for "Job Title" and "Website" on the user's pipedrive acc
 	## if any is missing, create it
+	## even if populated the field key will always be replaced
 	def self.assert_or_integrate(user)
 
 		assert_job = false
@@ -34,10 +36,7 @@ class User < ActiveRecord::Base
 
 		query = 'https://api.pipedrive.com/v1/personFields?api_token=' + user.app_key
       	response = HTTParty.get(query)
-
-      	puts "response", response
-      			
-      	#only 1 outside query saves time.
+    			
       	if response["success"]
       		response["data"].each do |search|
 	      		if search['name'] == "Job Title"
@@ -62,8 +61,6 @@ class User < ActiveRecord::Base
       			return false
       		end
       	end
-
-      	#todo set integrated to 1		
 	end
 
 	## effectively add the fields
@@ -76,12 +73,11 @@ class User < ActiveRecord::Base
   		if response["success"]
   			field_info = custom_field.find(response["data"]["id"])
   			field_api_key = field_info["data"]["key"]
+  			user.field_key["#{field_name}"] = field_api_key
+  			user.save
   		else
   			#proc creation error
   		end
-
-  		field_api_key
-
 	end
 
 	#queries for a company name. creates when it doesn't exist.
