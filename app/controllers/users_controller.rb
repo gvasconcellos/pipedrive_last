@@ -7,7 +7,14 @@ class UsersController < ApplicationController
 		@user = User.new(user_params)
 
 		if @user.save
-			redirect_to root_path, notice: "User successfully created"
+			if !@user.app_key.empty?
+
+				User.assert_or_integrate(@user)
+
+				redirect_to root_path, notice: "User successfully created and Integrated"
+			else
+				redirect_to root_path, notice: "User successfully created without Pipedrive Integration"
+			end
 		else
 			render action: "new"
 		end
@@ -22,7 +29,8 @@ class UsersController < ApplicationController
 		@user = User.find(params[:id])
     	respond_to do |format|
       		if @user.update(user_params)
-        		format.html { redirect_to leads_path, notice: 'App Key was successfully updated.' }
+      			User.assert_or_integrate(@user)
+      			format.html { redirect_to leads_path, notice: 'App Key was successfully updated.' }
 	        	format.json { render :show, status: :ok, location: leads_path }
       		else
 	        	format.html { render :edit }

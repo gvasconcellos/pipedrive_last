@@ -9,16 +9,12 @@ class LoginController < ApplicationController
 			session[:user_id] = user.id
 			redirect_to leads_path, notice: "Logged in"
 		else
-			flash.now[:alert] = "Invalid info"
 			redirect_to root_path, notice: "Invalid info"
-			#render "new"
 		end
 	end
 
 	def destroy
-		#log_out if logged_in?
 		session.clear
-		#session[:user_id].clear
 		redirect_to root_path
 	end
 end

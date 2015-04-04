@@ -32,7 +32,22 @@ class LeadsController < ApplicationController
     @lead = current_user.leads.build(lead_params)
 
     respond_to do |format|
+      
       if @lead.save
+        org_app_id = User.get_or_create_company(current_user, @lead.company)
+
+        lead_to_person = { 
+          org_id: org_app_id,
+          #pipedrive doesn't have a "last name" field.
+          name: @lead.name + " " + @lead.last_name,
+          email: @lead.email,
+          phone: @lead.phone,
+          #{}"Job Title" => lead.job_title,
+          #bla => @lead.website
+        } 
+        
+        Pipedrive::Person.new(current_user.app_key).create(lead_to_person)
+
         format.html { redirect_to @lead, notice: 'Lead was successfully created.' }
         format.json { render :show, status: :created, location: @lead }
       else
