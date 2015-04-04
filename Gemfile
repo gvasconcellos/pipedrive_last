@@ -35,8 +35,11 @@ gem 'bcrypt', '~> 3.0'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
- gem 'pipedrive_rdstation', :github => 'maxcnunes/pipedrive_rdstation'
- #gem 'pipedrive-ruby'
+ #gem 'pipedrive_rdstation', :github => 'maxcnunes/pipedrive_rdstation'
+ gem 'httparty'
+ gem 'pipedrive-ruby'
+ 
+
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

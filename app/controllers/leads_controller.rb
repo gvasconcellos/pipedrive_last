@@ -2,6 +2,8 @@ class LeadsController < ApplicationController
   before_filter :authorize_user
   before_action :set_lead, only: [:show, :edit, :update, :destroy]
 
+
+
   # GET /leads
   # GET /leads.json
   def index
@@ -44,11 +46,9 @@ class LeadsController < ApplicationController
           phone: @lead.phone,
           current_user.field_key["Job Title"] => @lead.job_title,
           current_user.field_key["Website"] => @lead.website
-          #{}"Job Title" => lead.job_title,
-          #bla => @lead.website
         } 
         
-        Pipedrive::Person.new(current_user.app_key).create(lead_to_person)
+        User.import_lead(current_user, lead_to_person)
 
         format.html { redirect_to @lead, notice: 'Lead was successfully created.' }
         format.json { render :show, status: :created, location: @lead }

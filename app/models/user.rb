@@ -68,18 +68,33 @@ class User < ActiveRecord::Base
 	## effectively add the fields
 	def self.add_field_to_user(user, field_name)
 		field_api_key = false
-		custom_field = Pipedrive::PersonField.new(user.app_key)
 
-  		response = custom_field.create({ name: field_name, field_type: "varchar" })
+		input_query = 'https://api.pipedrive.com/v1/personFields?api_token=' + user.app_key
 
-  		if response["success"]
-  			field_info = custom_field.find(response["data"]["id"])
-  			field_api_key = field_info["data"]["key"]
-  			user.field_key["#{field_name}"] = field_api_key
-  			user.save
-  		else
-  			#proc creation error
-  		end
+        response = HTTParty.post(input_query, 
+        	:body => {:name =>"#{field_name}", :field_type => "varchar"},
+        	:headers => {
+                'Accept'=>'application/json',
+                'Content-Type'=>'application/x-www-form-urlencoded',
+                'User-Agent'=>'Ruby.Pipedrive.Api'
+            }
+        )
+
+         unless response["data"] == nil
+         	puts "response",response
+           	field_api_id = response["data"]["id"]
+           	key_query = 'https://api.pipedrive.com/v1/personFields/'\
+            + field_api_id.to_s + '?api_token=' + user.app_key
+
+
+            field_key_response = HTTParty.get(key_query)
+
+            unless field_key_response["data"] == nil
+           		field_api_key = field_key_response["data"]["key"]
+           		user.field_key["#{field_name}"] = field_api_key
+  				user.save
+  			end
+        end
 	end
 
 	#queries for a company name. creates when it doesn't exist.
@@ -102,15 +117,39 @@ class User < ActiveRecord::Base
             end
           else
             #didn't find, create one
-            org = Pipedrive::Organization.new(user.app_key)
-            org_response = org.create({ name: company })
 
-            org_app_id = org.id_from_response(org_response)
+			input_query = 'https://api.pipedrive.com/v1/organizations?api_token=' + user.app_key
+
+        	org_response = HTTParty.post(input_query, :body => {"name"=>"#{company}"}, :headers => {
+                  'Accept'=>'application/json',
+                  'Content-Type'=>'application/x-www-form-urlencoded',
+                  'User-Agent'=>'Ruby.Pipedrive.Api'
+                  })
+
+
+            puts "org_response",org_response
+
+            unless org_response["data"] == nil
+            	org_app_id = org_response["data"]["id"]
+            	puts "org_app_id",org_app_id
+            end
           end
         else
           #error getting company
         end
         org_app_id
+	end
+
+	def self.import_lead(user, lead_to_import)
+		query = 'https://api.pipedrive.com/v1/persons?api_token=' + user.app_key
+
+
+        response = HTTParty.post(query, :body => lead_to_import, :headers => {
+                  'Accept'=>'application/json',
+                  'Content-Type'=>'application/x-www-form-urlencoded',
+                  'User-Agent'=>'Ruby.Pipedrive.Api'
+                  })
+        puts response
 	end
 
 end
