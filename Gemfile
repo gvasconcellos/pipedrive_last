@@ -35,9 +35,7 @@ gem 'bcrypt', '~> 3.0'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
- #gem 'pipedrive_rdstation', :github => 'maxcnunes/pipedrive_rdstation'
  gem 'httparty'
- gem 'pipedrive-ruby'
  
 
 

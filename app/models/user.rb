@@ -4,6 +4,9 @@ class User < ActiveRecord::Base
 	has_many :leads
 	serialize :field_key, Hash
 
+	PIPEDRIVE_API = "https://api.pipedrive.com/v1/"
+	TOKEN = "api_token="
+
 
 ## Local Authorization
 
@@ -34,17 +37,23 @@ class User < ActiveRecord::Base
 		assert_job = false
 		assert_website = false
 
-		query = 'https://api.pipedrive.com/v1/personFields?api_token=' + user.app_key
+		#query = 'https://api.pipedrive.com/v1/personFields?api_token=' + user.app_key
+        query = PIPEDRIVE_API + 'personFields?' + TOKEN + user.app_key
+
 		puts "query",query
       	response = HTTParty.get(query)
-    			
+    	puts "response",response
       	if response["success"]
       		response["data"].each do |search|
 	      		if search['name'] == "Job Title"
       				assert_job = true
+      				user.field_key["Job Title"] = search['key']
+  					user.save
       			end
       			if search['name'] == "Website"
 	      			assert_website = true
+	      			user.field_key["Website"] = search['key']
+  					user.save
       			end
       		end
       		unless assert_job
@@ -69,7 +78,7 @@ class User < ActiveRecord::Base
 	def self.add_field_to_user(user, field_name)
 		field_api_key = false
 
-		input_query = 'https://api.pipedrive.com/v1/personFields?api_token=' + user.app_key
+		input_query = PIPEDRIVE_API + 'personFields?' + TOKEN + user.app_key
 
         response = HTTParty.post(input_query, 
         	:body => {:name =>"#{field_name}", :field_type => "varchar"},
@@ -81,15 +90,15 @@ class User < ActiveRecord::Base
         )
 
          unless response["data"] == nil
-         	puts "response",response
            	field_api_id = response["data"]["id"]
-           	key_query = 'https://api.pipedrive.com/v1/personFields/'\
-            + field_api_id.to_s + '?api_token=' + user.app_key
+           	key_query = PIPEDRIVE_API + 'personFields/'\
+            + field_api_id.to_s + "?" + TOKEN + user.app_key
 
 
             field_key_response = HTTParty.get(key_query)
 
             unless field_key_response["data"] == nil
+
            		field_api_key = field_key_response["data"]["key"]
            		user.field_key["#{field_name}"] = field_api_key
   				user.save
@@ -100,8 +109,8 @@ class User < ActiveRecord::Base
 	#queries for a company name. creates when it doesn't exist.
 	def self.get_or_create_company(user, company)
 		org_app_id = ""
-		query = 'https://api.pipedrive.com/v1/organizations/find?term=' \
-            + company + '&start=0&api_token=' + user.app_key
+		query = PIPEDRIVE_API + 'organizations/find?term=' \
+            + company + '&start=0&' + TOKEN + user.app_key
         response = HTTParty.get(query)
         #if successfull and with content, get the company app_key
         #so as not to create another with the same name
@@ -117,8 +126,7 @@ class User < ActiveRecord::Base
             end
           else
             #didn't find, create one
-
-			input_query = 'https://api.pipedrive.com/v1/organizations?api_token=' + user.app_key
+			input_query = PIPEDRIVE_API + 'organizations?' + TOKEN + user.app_key
 
         	org_response = HTTParty.post(input_query, :body => {"name"=>"#{company}"}, :headers => {
                   'Accept'=>'application/json',
@@ -141,7 +149,7 @@ class User < ActiveRecord::Base
 	end
 
 	def self.import_lead(user, lead_to_import)
-		query = 'https://api.pipedrive.com/v1/persons?api_token=' + user.app_key
+		query = PIPEDRIVE_API + 'persons?' + TOKEN + user.app_key
 
 
         response = HTTParty.post(query, :body => lead_to_import, :headers => {
