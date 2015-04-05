@@ -6,7 +6,9 @@ class User < ActiveRecord::Base
 
 	PIPEDRIVE_API = "https://api.pipedrive.com/v1/"
 	TOKEN = "api_token="
-
+	HEADERS = {'Accept'=>'application/json',
+               'Content-Type'=>'application/x-www-form-urlencoded',
+               'User-Agent'=>'Ruby.Pipedrive.Api' }
 
 ## Local Authorization
 
@@ -37,12 +39,9 @@ class User < ActiveRecord::Base
 		assert_job = false
 		assert_website = false
 
-		#query = 'https://api.pipedrive.com/v1/personFields?api_token=' + user.app_key
         query = PIPEDRIVE_API + 'personFields?' + TOKEN + user.app_key
 
-		puts "query",query
       	response = HTTParty.get(query)
-    	puts "response",response
       	if response["success"]
       		response["data"].each do |search|
 	      		if search['name'] == "Job Title"
@@ -82,12 +81,7 @@ class User < ActiveRecord::Base
 
         response = HTTParty.post(input_query, 
         	:body => {:name =>"#{field_name}", :field_type => "varchar"},
-        	:headers => {
-                'Accept'=>'application/json',
-                'Content-Type'=>'application/x-www-form-urlencoded',
-                'User-Agent'=>'Ruby.Pipedrive.Api'
-            }
-        )
+        	:headers => HEADERS )
 
          unless response["data"] == nil
            	field_api_id = response["data"]["id"]
@@ -128,18 +122,10 @@ class User < ActiveRecord::Base
             #didn't find, create one
 			input_query = PIPEDRIVE_API + 'organizations?' + TOKEN + user.app_key
 
-        	org_response = HTTParty.post(input_query, :body => {"name"=>"#{company}"}, :headers => {
-                  'Accept'=>'application/json',
-                  'Content-Type'=>'application/x-www-form-urlencoded',
-                  'User-Agent'=>'Ruby.Pipedrive.Api'
-                  })
-
-
-            puts "org_response",org_response
+        	org_response = HTTParty.post(input_query, :body => HEADERS)
 
             unless org_response["data"] == nil
             	org_app_id = org_response["data"]["id"]
-            	puts "org_app_id",org_app_id
             end
           end
         else
@@ -152,12 +138,7 @@ class User < ActiveRecord::Base
 		query = PIPEDRIVE_API + 'persons?' + TOKEN + user.app_key
 
 
-        response = HTTParty.post(query, :body => lead_to_import, :headers => {
-                  'Accept'=>'application/json',
-                  'Content-Type'=>'application/x-www-form-urlencoded',
-                  'User-Agent'=>'Ruby.Pipedrive.Api'
-                  })
-        puts response
+        response = HTTParty.post(query, :body => lead_to_import, :headers => HEADERS)
 	end
 
 end
