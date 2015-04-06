@@ -7,6 +7,10 @@ Installing
     rake db:migrate
     rails server
     
+Or check it via Heroku
+
+    http://pacific-river-1652.herokuapp.com/
+    
 Setup/Workflow
     
     The App Key isn't necessary when using the app, but the actions won't reflect on Pipedrive without it.
