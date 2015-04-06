@@ -9,7 +9,7 @@
 <body>
 <ul class="nav navbar-nav navbar-right">
 <% if current_user %>
-	<a>Logged as <%= current_user.name %> </a>
+	<a>Logged as <%= current_user.email %> </a>
 	<a><%= link_to "New Lead", new_lead_path %></a>
 	<a><%= link_to "Leads", leads_path %></a>
 	<a><%= link_to current_user.app_key.empty?? 'Pipedrive DISABLED' : 'Pipedrive ENABLED', edit_user_path(current_user) %></a>

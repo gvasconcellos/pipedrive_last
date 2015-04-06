@@ -31,114 +31,31 @@ class User < ActiveRecord::Base
 		BCrypt::Password.new(encrypted_password) == pass_to_validate
 	end
 
-	## searches for "Job Title" and "Website" on the user's pipedrive acc
-	## if any is missing, create it
-	## even if populated the field key will always be replaced
+	## searches for "Job Title" and "Website" (or any other field)
+  ## on the user's pipedrive acc. if any is missing, create it
+	## even if already populated the field key will always be replaced
 	def self.assert_or_integrate(user)
 
-		assert_job = false
-		assert_website = false
+    #the fields listed here will be created as PersonFields in pipedrive
+    #and their key will be added to user.field_key hash
+    field_name = ["Job Title", "Website" ]
 
-        query = PIPEDRIVE_API + 'personFields?' + TOKEN + user.app_key
+    field_key = Rdgem.assert_fields(field_name, user.app_key)
 
-      	response = HTTParty.get(query)
-      	if response["success"]
-      		response["data"].each do |search|
-	      		if search['name'] == "Job Title"
-      				assert_job = true
-      				user.field_key["Job Title"] = search['key']
-  					user.save
-      			end
-      			if search['name'] == "Website"
-	      			assert_website = true
-	      			user.field_key["Website"] = search['key']
-  					user.save
-      			end
-      		end
-      		unless assert_job
-	      		add_field_to_user(user, "Job Title")
-      		end
-      		unless assert_website
-	      		add_field_to_user(user, "Website")
-      		end
-      		#successfully integrated
-      		return true
-      	else
-      		if response["error"] == "You need to be authorized to make this request."
-      			user.app_key = ""
-      			user.save
-      			#invalid key
-      			return false
-      		end
-      	end
-	end
-
-	## effectively add the fields
-	def self.add_field_to_user(user, field_name)
-		field_api_key = false
-
-		input_query = PIPEDRIVE_API + 'personFields?' + TOKEN + user.app_key
-
-        response = HTTParty.post(input_query, 
-        	:body => {:name =>"#{field_name}", :field_type => "varchar"},
-        	:headers => HEADERS )
-
-         unless response["data"] == nil
-           	field_api_id = response["data"]["id"]
-           	key_query = PIPEDRIVE_API + 'personFields/'\
-            + field_api_id.to_s + "?" + TOKEN + user.app_key
-
-
-            field_key_response = HTTParty.get(key_query)
-
-            unless field_key_response["data"] == nil
-
-           		field_api_key = field_key_response["data"]["key"]
-           		user.field_key["#{field_name}"] = field_api_key
-  				user.save
-  			end
-        end
-	end
-
-	#queries for a company name. creates when it doesn't exist.
-	def self.get_or_create_company(user, company)
-		org_app_id = ""
-		query = PIPEDRIVE_API + 'organizations/find?term=' \
-            + company + '&start=0&' + TOKEN + user.app_key
-        response = HTTParty.get(query)
-        #if successfull and with content, get the company app_key
-        #so as not to create another with the same name
-        if response["success"]
-          unless response["data"] == nil
-            response["data"].each do |search|
-              if search['name'] == company
-                org_app_id = search['id']
-                #not caring about duplicates. 
-                #a test will ensure we at least won't create any
-                break
-              end
-            end
-          else
-            #didn't find, create one
-			input_query = PIPEDRIVE_API + 'organizations?' + TOKEN + user.app_key
-
-        	org_response = HTTParty.post(input_query, :body => HEADERS)
-
-            unless org_response["data"] == nil
-            	org_app_id = org_response["data"]["id"]
-            end
-          end
-        else
-          #error getting company
-        end
-        org_app_id
-	end
-
-	def self.import_lead(user, lead_to_import)
-		query = PIPEDRIVE_API + 'persons?' + TOKEN + user.app_key
-
-
-        response = HTTParty.post(query, :body => lead_to_import, :headers => HEADERS)
-	end
-
+    #wrong app key error
+    unless field_key 
+      #blanking out app_key
+      user.app_key = ""
+      user.save
+      return false
+    else
+      #fill in the user's field_key hash
+      field_name.each do |fill|
+        user.field_key["#{fill}"] = field_key["#{fill}"]
+      end
+      user.save
+      return true
+    end
+    return false
+ 	end
 end

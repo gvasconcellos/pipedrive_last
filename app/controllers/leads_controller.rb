@@ -2,8 +2,6 @@ class LeadsController < ApplicationController
   before_filter :authorize_user
   before_action :set_lead, only: [:show, :edit, :update, :destroy]
 
-
-
   # GET /leads
   # GET /leads.json
   def index
@@ -36,7 +34,8 @@ class LeadsController < ApplicationController
     respond_to do |format|
       
       if @lead.save
-        org_app_id = User.get_or_create_company(current_user, @lead.company)
+
+        org_app_id = Rdgem.get_or_create_company(current_user.app_key, @lead.company)
 
         lead_to_person = { 
           org_id: org_app_id,
@@ -48,7 +47,7 @@ class LeadsController < ApplicationController
           current_user.field_key["Website"] => @lead.website
         } 
         
-        User.import_lead(current_user, lead_to_person)
+        response = Rdgem.send_lead(current_user.app_key, lead_to_person)
 
         format.html { redirect_to @lead, notice: 'Lead was successfully created.' }
         format.json { render :show, status: :created, location: @lead }
