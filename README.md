@@ -25,3 +25,9 @@ Setup/Workflow
     Currently only CREATE is supported therefore whenever you add a new Lead (while integrated), the creation 
     will also take place at Pipedrive. The lead's organization will be searched for and used if found. 
     Otherwise a new one will be added.
+
+TODOs
+
+    fix root is pointing to login even when user already logged
+    automated testings
+    integrate update and delete
