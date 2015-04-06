@@ -12,8 +12,8 @@ Setup/Workflow
     The App Key isn't necessary when using the app, but the actions won't reflect on Pipedrive without it.
     You can add it as you create a user or later on.
     
-    Any user can integrate with any Pipedrive account. Though only one at a time. To disconnect just wipe the app_key
-    field or try to integrate with an invalid App Key.
+    Any user can integrate with any Pipedrive account. Though only one at a time. To disconnect just wipe 
+    the app_key field or try to integrate with an invalid App Key.
     
     Whenever you successfully integrate with any Pipedrive account the app will query the account for the list of 
     customized fields (currently "Job Title" and "Website"). If any of them is missing they will be added.
