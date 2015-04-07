@@ -4,17 +4,14 @@ class User < ActiveRecord::Base
 	has_many :leads
 	serialize :field_key, Hash
 
-	PIPEDRIVE_API = "https://api.pipedrive.com/v1/"
-	TOKEN = "api_token="
-	HEADERS = {'Accept'=>'application/json',
-               'Content-Type'=>'application/x-www-form-urlencoded',
-               'User-Agent'=>'Ruby.Pipedrive.Api' }
+  before_save { self.email = email.downcase }
 
-## Local Authorization
-
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+  validates :email, presence: true, length: { maximum: 255 },
+                    format: { with: VALID_EMAIL_REGEX },
+                    uniqueness: { case_sensitive: false }, on: :create
 	#allowing us to edit only APP_KEY from user
-	validates_presence_of :email, :name, :password, :password_confirmation, on: :create
-	validates_uniqueness_of :email
+	validates_presence_of :name, :password, :password_confirmation, on: :create
 	validates_length_of :password, minimum: 5, maximum: 120, allow_blank: true
 	validates_confirmation_of :password
 	
