@@ -12,7 +12,7 @@
 	<a>Logged as <%= current_user.email %> </a>
 	<a><%= link_to "New Lead", new_lead_path %></a>
 	<a><%= link_to "Leads", leads_path %></a>
-	<a><%= link_to current_user.app_key.empty?? 'Pipedrive DISABLED' : 'Pipedrive ENABLED', edit_user_path(current_user) %></a>
+	<a><%= link_to current_user.app_key.blank?? 'Pipedrive DISABLED' : 'Pipedrive ENABLED', edit_user_path(current_user) %></a>
 	<a><%= link_to "Log Out", logout_path, method: :delete, data: { confirm: 'Really log out?' } %></a>
 <% else %>
 	<a><%= link_to "Sign Up", new_user_path %></a>

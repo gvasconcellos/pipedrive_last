@@ -1,4 +1,5 @@
 class LoginController < ApplicationController
+
 	def new
 		if !session[:user_id].blank?
 			redirect_to leads_path
@@ -9,7 +10,7 @@ class LoginController < ApplicationController
 		user = User.find_by_email(params[:user][:email])
 
 		if user && user.valid_password?(params[:user][:password])
-			session[:user_id] = user.id
+			log_in user
 			redirect_to leads_path, notice: "Logged in"
 		else
 			redirect_to root_path, notice: "Invalid info"
@@ -17,7 +18,7 @@ class LoginController < ApplicationController
 	end
 
 	def destroy
-		session.clear
+		log_out unless current_user.blank?
 		redirect_to root_path
 	end
 end

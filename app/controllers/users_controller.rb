@@ -1,4 +1,7 @@
 class UsersController < ApplicationController
+	before_action :logged_in_user, only: [:edit, :update]
+	before_action :correct_user, only: [:edit, :update]
+
 	def new
 		@user = User.new
 	end
@@ -7,6 +10,7 @@ class UsersController < ApplicationController
 		@user = User.new(user_params)
 
 		if @user.save
+			log_in @user
 			if @user.app_key.blank? || !User.assert_or_integrate(@user)
 				redirect_to root_path, notice: "User successfully created. \
 										App Key is either empty or invalid. "
@@ -39,4 +43,20 @@ class UsersController < ApplicationController
 	def user_params
       params.require(:user).permit(:name, :email, :password, :password_confirmation, :app_key, :field_key)
     end
+
+    private
+
+    def logged_in_user
+    	unless logged_in?
+    		redirect_to root_path, notice: 'Please Log In'
+    	end
+    end
+
+    def correct_user
+    	@user = User.find(params[:id])
+    	unless @user == current_user
+    		redirect_to root_path, notice: 'Cant edit other users' 
+    	end
+    end
+
 end

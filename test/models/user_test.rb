@@ -62,5 +62,5 @@ class UserTest < ActiveSupport::TestCase
   	@user.password = @user.password_confirmation = "a" * 4
   	assert_not @user.valid?
   end
-
+  
 end
