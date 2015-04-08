@@ -9,9 +9,10 @@ class User < ActiveRecord::Base
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
-                    uniqueness: { case_sensitive: false }, on: :create
+                    uniqueness: { case_sensitive: false }
 	#allowing us to edit only APP_KEY from user
-	validates_presence_of :name, :password, :password_confirmation, on: :create
+	validates :name, presence: true, length: { maximum: 50 }
+  validates_presence_of :password, :password_confirmation, on: :create
 	validates_length_of :password, minimum: 5, maximum: 120, allow_blank: true
 	validates_confirmation_of :password
 	

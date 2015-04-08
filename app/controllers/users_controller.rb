@@ -7,7 +7,7 @@ class UsersController < ApplicationController
 		@user = User.new(user_params)
 
 		if @user.save
-			if @user.app_key.empty? || !User.assert_or_integrate(@user)
+			if @user.app_key.blank? || !User.assert_or_integrate(@user)
 				redirect_to root_path, notice: "User successfully created. \
 										App Key is either empty or invalid. "
 			else
