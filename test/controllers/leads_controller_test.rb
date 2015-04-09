@@ -12,9 +12,6 @@ class LeadsControllerTest < ActionController::TestCase
   								phone: 1,
   								website: "MyString" } )
     @lead.save
-    #@lead = leads(:lead_one)
-    #@user = User.new(name: "Testing User", email: "testing@user.com",
-  	#				password: "foobar", password_confirmation: "foobar")
   end
 
   test "should get index" do
@@ -42,33 +39,6 @@ class LeadsControllerTest < ActionController::TestCase
   	assert_not flash.empty?
   	#further checking will be made on the gem
   	assert_equal 'Lead was successfully created but not integrated', flash[:notice]
-  end
-
-  test "should create lead while integrated" do
-  	log_out
-  	@other_user = users(:tadeu)
-  	log_in(@other_user)
-    @lead = @other_user.leads.new({ name: "MyString",
-    								last_name: "MyString",
-  									email: "MyString",
-  									company: "MyString",
-  									job_title: "MyString",
-  									phone: 1,
-  									website: "MyString" } )
-    @lead.save
-    assert_difference('Lead.count') do
-      post :create, lead: { company: @lead.company,
-      						email: @lead.email,
-      						job_title: @lead.job_title,
-      						last_name: @lead.last_name,
-      						name: @lead.name,
-      						phone: @lead.phone,
-      						website: @lead.website }
-    end
-  	assert_redirected_to lead_path(assigns(:lead))
-  	assert_not flash.empty?
-  	#further checking will be made on the gem
-  	assert_equal 'Lead was successfully created and integrated', flash[:notice]
   end
 
   test "should show lead" do
