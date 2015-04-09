@@ -39,7 +39,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
 		assert_template 'leads/index'
 		assert_not flash.empty?
 		assert logged?
-    #integration successful
+    #checks integration successful
     @user = User.find_by_email("user@testing.com")
     assert @user.app_key
     assert @user.field_key["Job Title"]
@@ -58,7 +58,9 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     assert_template 'leads/index'
     assert_not flash.empty?
     assert logged?
-    #integration successful
+    #checks integration not successful
+    #custom field keys were not obtained 
+    #whether they are there or not doesn't matter
     @user = User.find_by_email("user@testing.com")
     assert @user.app_key.blank?
     assert @user.field_key["Job Title"].blank?

@@ -12,6 +12,10 @@ class ApplicationController < ActionController::Base
   	end
   end
 
+  def integrated?
+    return !current_user.app_key.blank?
+  end
 
-  helper_method :current_user
+
+  helper_method :current_user, :integrated?
 end
