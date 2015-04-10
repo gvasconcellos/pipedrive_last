@@ -42,7 +42,7 @@ class UsersEditTest < ActionDispatch::IntegrationTest
   		log_in(@user)
   		get edit_user_path(@user)
   		assert_template 'users/edit'
-  		app_key = "cbf8f6b10b70e4b77a8f658c2c39813451b2c965"
+  		app_key = TRIAL_APP_KEY?
   		patch user_path(@user), user: { app_key: app_key }
   		assert_redirected_to leads_path
   		follow_redirect!

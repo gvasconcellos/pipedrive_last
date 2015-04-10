@@ -35,7 +35,7 @@ class LeadsController < ApplicationController
       
       if @lead.save
         if integrated?
-          org_app_id = Rdgem.get_or_create_company(current_user.app_key, @lead.company)
+          org_app_id = Rdgem::Companies.get_or_create_company(current_user.app_key, @lead.company)
   
           lead_to_person = { 
             org_id: org_app_id,
@@ -47,7 +47,7 @@ class LeadsController < ApplicationController
             current_user.field_key["Website"] => @lead.website
           } 
           
-          response = Rdgem.send_lead(current_user.app_key, lead_to_person)
+          response = Rdgem::People.send_lead(current_user.app_key, lead_to_person)
           format.html { redirect_to @lead, notice: 'Lead was successfully created and integrated' }
         else
           format.html { redirect_to @lead, notice: 'Lead was successfully created but not integrated' }

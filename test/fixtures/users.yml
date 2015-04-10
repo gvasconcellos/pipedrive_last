@@ -8,5 +8,5 @@ jonas:
 tadeu:
   name: Tadeu
   email: tadeu@trindoce.com
-  app_key: cbf8f6b10b70e4b77a8f658c2c39813451b2c965
+  app_key: e124f874f8b066431f136cc85b07fbaf9a6c7a2b
   encrypted_password: <%= BCrypt::Password.create('password') %>

@@ -32,7 +32,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
   	assert_difference 'User.count', 1 do
   		post_via_redirect users_path, user: { 	name: "Testing",
   												email: "user@testing.com",
-                          app_key: "cbf8f6b10b70e4b77a8f658c2c39813451b2c965",
+                          app_key: TRIAL_APP_KEY?,
   												password: "abcde",
   												password_confirmation: "abcde"}
 		end

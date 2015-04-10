@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
     #and their key will be added to user.field_key hash
     field_name = ["Job Title", "Website" ]
 
-    field_key = Rdgem.assert_fields(field_name, user.app_key)
+    field_key = Rdgem::PeopleFields.assert_fields(field_name, user.app_key)
 
     #wrong app key error
     unless field_key 

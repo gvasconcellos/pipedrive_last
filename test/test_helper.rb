@@ -30,5 +30,9 @@ class ActiveSupport::TestCase
       defined?(post_via_redirect) || defined?(patch_via_redirect)
     end
 
+    def TRIAL_APP_KEY?
+      return "e124f874f8b066431f136cc85b07fbaf9a6c7a2b"
+    end
+
   # Add more helper methods to be used by all tests here...
 end

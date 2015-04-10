@@ -20,7 +20,7 @@ class LeadsPushingTest < ActionDispatch::IntegrationTest
 test "should create and push lead while integrated" do
  	#simulating integration (editing app_key with a valid value)
  	get edit_user_path(@user)
-  	app_key = "cbf8f6b10b70e4b77a8f658c2c39813451b2c965"
+  	app_key = TRIAL_APP_KEY?
   	patch user_path(@user), user: { app_key: app_key }
   	@user.reload
   	#app key is correct
@@ -40,7 +40,6 @@ test "should create and push lead while integrated" do
     end
   	assert_redirected_to lead_path(assigns(:lead))
   	assert_not flash.empty?
-  	#further checking will be made on the gem
   	assert_equal 'Lead was successfully created and integrated', flash[:notice]
   end
 end
