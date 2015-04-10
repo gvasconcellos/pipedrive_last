@@ -9,12 +9,12 @@ Installing
     
 Or check it via Heroku
 
-    http://pacific-river-1652.herokuapp.com/
+    http://rd-pipedrive-challenge.herokuapp.com/
     
 Setup/Workflow
     
     The App Key isn't necessary when using the app, but the actions won't reflect on Pipedrive without it.
-    You can add it as you create a user or later on.
+    You can add it as you create a user or integrate later on.
     
     Any user can integrate with any Pipedrive account. Though only one at a time. To disconnect just wipe 
     the app_key field or try to integrate with an invalid App Key.
@@ -25,9 +25,3 @@ Setup/Workflow
     Currently only CREATE is supported therefore whenever you add a new Lead (while integrated), the creation 
     will also take place at Pipedrive. The lead's organization will be searched for and used if found. 
     Otherwise a new one will be added.
-
-TODOs
-
-    fix root is pointing to login even when user already logged
-    automated testings
-    integrate update and delete
